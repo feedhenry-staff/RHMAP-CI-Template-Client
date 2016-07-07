@@ -32,7 +32,7 @@ module.exports = function (grunt) {
         files: ['<%= app.app %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
-          livereload: 35730
+          livereload: 35739
         }
       },
       styles: {
@@ -57,10 +57,10 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9002,
+        port: 9003,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35730
+        livereload: 35739
       },
       livereload: {
         options: {
