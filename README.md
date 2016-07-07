@@ -31,3 +31,14 @@ You can also use Grunt to point your App at a local developement server. To do t
 * you can also pass a 'url' optional flag to server:local, e.g. ```grunt serve:local --url=http://localhost:9000```
 
 * We can also write your own tasks by extending the Gruntfile.js, e.g. add a 'serve:live' target that hits your server in your FeedHenry live enivronment.
+
+### Testing
+Unit tests and end-to-end tests are setup and can be run using Gulp
+
+* Install grunt: ```npm install --global gulp-cli```
+* Run ```gulp test:unit``` for unit tests
+* Run ```gulp test:e2e``` for unit tests 
+
+Unit tests use `Jasmine` framwork and `Karma` test runner with `PhantomJS` browser.  Tests are in ``www/js/test`` folder
+
+e2e tests use `Nightwatch` framework/ runner with `Selenium`.  Tests are in ``e2eTest`` folder.  The ```gulp test:e2e``` command runs the tests in PhantomJS and in Chrome.
