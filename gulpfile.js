@@ -30,20 +30,26 @@ gulp.task("kill-server", function () {
 });
 
 // run tests with nightwatch and phantomJS browser
-gulp.task('nightwatchPhantom', function(){
-  return gulp.src('')
+gulp.task('nightwatchPhantom', function(cb){
+  gulp.src('')
     .pipe(nightwatch({
       configFile: 'nightwatch.json'
-    }));
+    })
+  )
+  .on('error',function(){cb();})
+  .on('end',cb);
 });
 
 // run tests with nightwatch and Chrome
-gulp.task('nightwatchChrome', function(){
-  return gulp.src('')
+gulp.task('nightwatchChrome', function(cb){
+  gulp.src('')
     .pipe(nightwatch({
       configFile: 'nightwatch.json',
       cliArgs: [ '--env chrome' ]
-    }));
+    })
+  )
+  .on('error',function(){cb();})
+  .on('end',cb);
 });
 
 // start server
