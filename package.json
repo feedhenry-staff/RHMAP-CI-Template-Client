@@ -1,5 +1,5 @@
 {
-  "name": "feedhenry-helloworld-hybrid-app",
+  "name": "feedhenry-CI-hybrid-app",
   "private": true,
   "version": "0.0.0",
   "dependencies": {},
@@ -21,7 +21,11 @@
     "load-grunt-tasks": "~0.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "run-sequence": "^1.2.2",
-    "time-grunt": "~0.2.1"
+    "time-grunt": "~0.2.1",
+    "async": "^2.0.0-rc.6",
+    "fh-fhc": "^2.9.1-338",
+    "request": "^2.72.0",
+    "sendgrid": "^3.0.7"
   },
   "engines": {
     "node": ">=0.8.0"
