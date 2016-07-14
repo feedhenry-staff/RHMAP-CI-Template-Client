@@ -1,0 +1,18 @@
+{
+	"build": {
+		"newconnectiontag": "",
+		"destination": "",
+		"branch": "",
+		"download": false,
+		"teamsToEmailOnBuild": [],
+		"cloudappid": ""
+	},
+	"login": {
+		"username": "",
+		"password": ""
+	},
+	"appstore": {
+		"storeitemname": ""
+	},
+	"projecttitle": ""
+}

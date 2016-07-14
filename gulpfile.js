@@ -457,28 +457,28 @@ gulp.task('fhc-login', ['fhc-target'], function(done){
         console.log('Please specify the username and password in the ' + process.env.rhmapClientConfig + ' file')
         done();
     } else {
-        rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig));
+        var rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig));
 
         fhcLoad(function(){
-          fhc.fhcfg({_ : ["get", "username"]}, function(err, username){
-              if (err) return done(err);
-              //Checking if the currently logged in user is the same as what is in the config file
-              //if it's not, then login the user that's in the config file
-              if(username !== rhmapConfFileContent.login.username){
-                  fhcLoad(function(){
-                      fhc.login({_ : [rhmapConfFileContent.login.username, rhmapConfFileContent.login.password]}, function(err, res){
-                          if (err) return done(err);
+            fhc.fhcfg({_ : ["get", "username"]}, function(err, username){
+                if (err) return done(err);
+                //Checking if the currently logged in user is the same as what is in the config file
+                //if it's not, then login the user that's in the config file
+                if(username !== rhmapConfFileContent.login.username){
+                    fhcLoad(function(){
+                        fhc.login({_ : [rhmapConfFileContent.login.username, rhmapConfFileContent.login.password]}, function(err, res){
+                            if (err) return done(err);
 
-                          console.log("Finished login with status of '" + res.result + "' by user " + rhmapConfFileContent.login.username + " to the domain " + res.domain);
+                            console.log("Finished login with status of '" + res.result + "' by user " + rhmapConfFileContent.login.username + " to the domain " + res.domain);
 
-                          done();
-                      });
-                  }, done);
-              } else {
-                  done();
-              }
-          });
-      }, done);
+                            done();
+                        });
+                    }, done);
+                } else {
+                    done();
+                }
+            });
+        }, done);
     }
 })
 
