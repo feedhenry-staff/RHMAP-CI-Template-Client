@@ -482,15 +482,12 @@ gulp.task('fhc-login', ['fhc-target'], function(done){
     }
 })
 
-//fhc also needs an authenticated user
+//set properties in config file. Use format --property=value
 gulp.task('fhc-set-config', function(done){
 
-    var configExists = fs.existsSync(process.env.rhmapClientConfig);
+    var configExists = fs.existsSync(process.env.rhmapClientConfig),
+        args = structureArgs(process.argv);
 
-    var args = structureArgs(process.argv);
-
-    //If it doesn't, create a new blank file
-    // If it does, read it 
     if(!configExists){
         console.log('Config file does not exist, please run fhc-client-setup')
     } else if (isEmpty(args)){
@@ -514,14 +511,12 @@ gulp.task('fhc-set-config', function(done){
     done();
 })
 
-//fhc also needs an authenticated user
+//Read from config. PRints entire config to console if no parameter set. Otherwise use format --property
 gulp.task('fhc-get-config', function(done){
 
     var configExists = fs.existsSync(process.env.rhmapClientConfig),
         args = process.argv;
 
-    //If it doesn't, create a new blank file
-    // If it does, read it 
     if(!configExists){
         console.log('Config file does not exist, please run fhc-client-setup')
     } else {
