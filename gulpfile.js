@@ -482,6 +482,68 @@ gulp.task('fhc-login', ['fhc-target'], function(done){
     }
 })
 
+//fhc also needs an authenticated user
+gulp.task('fhc-set-config', function(done){
+
+    var configExists = fs.existsSync(process.env.rhmapClientConfig);
+
+    var args = structureArgs(process.argv);
+
+    //If it doesn't, create a new blank file
+    // If it does, read it 
+    if(!configExists){
+        console.log('Config file does not exist, please run fhc-client-setup')
+    } else if (isEmpty(args)){
+        console.log('No arguments specified. should be structured as --argument=value')
+    } else {
+        var rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig));
+
+        for (var key in args) {
+            if (args.hasOwnProperty(key)) {
+                var exists = rhmapConfFileContent[key],
+                    text = exists ? "Changed " : "Added ";
+
+                console.log(text + "property: " + key + ". old value: " + rhmapConfFileContent[key] + ", new value: " + args[key])
+                rhmapConfFileContent[key] = args[key];
+            }
+        }
+
+        fs.writeFileSync(process.env.rhmapClientConfig, JSON.stringify(rhmapConfFileContent, null, '\t'));
+    }
+
+    done();
+})
+
+//fhc also needs an authenticated user
+gulp.task('fhc-get-config', function(done){
+
+    var configExists = fs.existsSync(process.env.rhmapClientConfig),
+        args = process.argv;
+
+    //If it doesn't, create a new blank file
+    // If it does, read it 
+    if(!configExists){
+        console.log('Config file does not exist, please run fhc-client-setup')
+    } else {
+        var rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig));
+
+        if (args.length <= 3){
+            console.log(rhmapConfFileContent);
+            return done();
+        }
+
+        var key = process.argv[3].substring(2);
+
+        if(rhmapConfFileContent[key]){
+            console.log(key + " = " + rhmapConfFileContent[key]);
+        } else {
+            console.log('Property ' + key + ' does not exist');
+        }
+    }
+
+    done();
+})
+
 //all command through the fhc module need to be wrapped inside an fhcLoad
 function fhcLoad(func, done){
     var conf = {
@@ -640,4 +702,8 @@ function compareVersionNumbers(v1, v2){
 function isPositiveInteger(x) {
     // http://stackoverflow.com/a/1019526/11236
     return /^\d+$/.test(x);
+}
+
+function isEmpty(obj) {
+  return !Object.keys(obj).length > 0;
 }
