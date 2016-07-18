@@ -9,7 +9,8 @@
 	},
 	"login": {
 		"username": "",
-		"password": ""
+		"password": "",
+		"apikey": ""
 	},
 	"appstore": {
 		"storeitemname": ""

@@ -79,7 +79,7 @@ gulp.task('e2ePhantom', ['connect', 'nightwatchPhantom']);
 gulp.task('e2eChrome', ['connect', 'nightwatchChrome']);
 
 //Initalise properties in the rhmap.conf-client.json file if they do not exist
-gulp.task('fhc-client-setup', ['fhc-login'], function(done){
+gulp.task('fhc-client-setup', ['fhc-login-apikey'], function(done){
     var fhConfFileContent = JSON.parse(fs.readFileSync(process.env.fhConfig)),
         rhmapConfFileContent = {},
         requestsArr = [];
@@ -135,6 +135,10 @@ gulp.task('fhc-client-setup', ['fhc-login'], function(done){
 
     if(!rhmapConfFileContent.login.password){
         rhmapConfFileContent.login.password = "";
+    }
+
+    if(!rhmapConfFileContent.login.apikey){
+        rhmapConfFileContent.login.apikey = "";
     }
 
     if(!rhmapConfFileContent.appstore){
@@ -446,7 +450,7 @@ gulp.task('fhc-target', function(done){
 })
 
 //fhc also needs an authenticated user
-gulp.task('fhc-login', ['fhc-target'], function(done){
+gulp.task('fhc-login-basic', ['fhc-target'], function(done){
 
     var configExists = fs.existsSync(process.env.rhmapClientConfig);
 
@@ -470,6 +474,49 @@ gulp.task('fhc-login', ['fhc-target'], function(done){
                             if (err) return done(err);
 
                             console.log("Finished login with status of '" + res.result + "' by user " + rhmapConfFileContent.login.username + " to the domain " + res.domain);
+
+                            done();
+                        });
+                    }, done);
+                } else {
+                    done();
+                }
+            });
+        }, done);
+    }
+})
+
+//fhc also needs an authenticated user
+gulp.task('fhc-login-apikey', ['fhc-target'], function(done){
+
+    var configExists = fs.existsSync(process.env.rhmapClientConfig);
+
+    //If it doesn't, create a new blank file
+    // If it does, read it 
+    if(!configExists){
+        fs.writeFileSync(process.env.rhmapClientConfig, JSON.stringify({}));
+        console.log('Please specify the api key in the ' + process.env.rhmapClientConfig + ' file');
+        done();
+    } else{
+        var rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig)),
+            apiKey = rhmapConfFileContent.login.apikey;
+
+        if(!apiKey){
+            console.log('Please specify the api key in the ' + process.env.rhmapClientConfig + ' file');
+            return done();
+        }
+
+        fhcLoad(function(){
+            fhc.fhcfg({_ : ["get", "user_api_key"]}, function(err, cfgApiKey){
+                if (err) return done(err);
+                //Checking if the currently stored api key is the same as what is in the config file
+                //if it's not, then set the api key in teh cfg file
+                if(cfgApiKey !== apiKey){
+                    fhcLoad(function(){
+                        fhc.fhcfg({_ : ["set", "user_api_key", apiKey]}, function(err, res){
+                            if (err) return done(err);
+
+                            console.log("Finished setting API key");
 
                             done();
                         });
