@@ -13,15 +13,20 @@ process.env.rhmapClientConfig = './rhmap.conf-client.json';
 process.env.fhConfig = './www/fhconfig.json';
 
 var latestArtifact = {};
- 
+
 /**
  * Run unit test once and exit
  */
 gulp.task('test:unit', function (done) {
-    new Server({
-        configFile: __dirname + '/karma.conf.js',
-        singleRun: true
-    }, done).start();
+    var spawn=require("child_process").spawn;
+    var cp=spawn(__dirname+"/node_modules/.bin/karma",["start","--single-run"],{
+      stdio:"inherit"
+    });
+    cp.on("close",done);
+    // new Server({
+    //     configFile: __dirname + '/karma.conf.js',
+    //     singleRun: true
+    // }, done);
 });
 
 
@@ -177,7 +182,7 @@ gulp.task('fhc-client-setup', ['fhc-login-apikey'], function(done){
                 if (err) return done(err);
 
                 //2 ways to get cloud app id
-                //(1) Get tag from fhconfig.json and use the cloud appid associated with it - only issue is fhc build doesn't update with new tags in the studio.  
+                //(1) Get tag from fhconfig.json and use the cloud appid associated with it - only issue is fhc build doesn't update with new tags in the studio.
                 //(2) Fallback - Get highest tag number from response and use the cloud appid associated with it.
 
                 //(1)
@@ -195,7 +200,7 @@ gulp.task('fhc-client-setup', ['fhc-login-apikey'], function(done){
                     //sorts connections by tag in asscending order
                     connections.sort(compareVersionNumbers);
 
-                    //set cloudappid to one associated with highest tag version number(last in array after sort) 
+                    //set cloudappid to one associated with highest tag version number(last in array after sort)
                     rhmapConfFileContent.build.cloudappid = connections[connections.length - 1].cloudApp;
                 }
 
@@ -325,7 +330,7 @@ gulp.task('fhc-store-create-item', ['fhc-client-setup'] ,function(done){
 gulp.task('fhc-store-upload-binary', ['fhc-store-create-item'],function(done){
     var rhmapConfFileContent = JSON.parse(fs.readFileSync(process.env.rhmapClientConfig));
 
-    //Checks that there is a localbinarypath set in the config file from the build 
+    //Checks that there is a localbinarypath set in the config file from the build
     if(!rhmapConfFileContent.appstore.localbinarypath){
         return done("Please run fhc-client-build first with download=true set in the config file");
     }
@@ -455,7 +460,7 @@ gulp.task('fhc-login-basic', ['fhc-target'], function(done){
     var configExists = fs.existsSync(process.env.rhmapClientConfig);
 
     //If it doesn't, create a new blank file
-    // If it does, read it 
+    // If it does, read it
     if(!configExists){
         fs.writeFileSync(process.env.rhmapClientConfig, JSON.stringify({}));
         console.log('Please specify the username and password in the ' + process.env.rhmapClientConfig + ' file')
@@ -492,7 +497,7 @@ gulp.task('fhc-login-apikey', ['fhc-target'], function(done){
     var configExists = fs.existsSync(process.env.rhmapClientConfig);
 
     //If it doesn't, create a new blank file
-    // If it does, read it 
+    // If it does, read it
     if(!configExists){
         fs.writeFileSync(process.env.rhmapClientConfig, JSON.stringify({}));
         console.log('Please specify the api key in the ' + process.env.rhmapClientConfig + ' file');
@@ -602,7 +607,7 @@ function fhcLoad(func, done){
 
 /*
  *
- * Util functions 
+ * Util functions
  *
  */
 function sendMailWithSendGrid(toEmail, subject, content){
@@ -634,7 +639,7 @@ function generateBuildEmailContent(){
         fhConfFileContent = JSON.parse(fs.readFileSync(process.env.fhConfig));
 
     //Example - Build - Project Name, App Name - Android [v39]
-    return "<strong>Project Title:</strong> " + rhmapConfFileContent.projecttitle + "<br>" + 
+    return "<strong>Project Title:</strong> " + rhmapConfFileContent.projecttitle + "<br>" +
     "<strong>App Title:</strong> " + fhConfFileContent.apptitle + "<br>" +
     "<strong>Platform:</strong> " + latestArtifact.destination + "<br>" +
     "<strong>App Version:</strong> " + latestArtifact.appVersion + "<br>" +
@@ -676,7 +681,7 @@ function structureArgs(args){
                 structuredArgs[key] = arg;
                 key = null;
             }
-            
+
         }
     }
 
