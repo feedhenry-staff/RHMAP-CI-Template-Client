@@ -437,7 +437,7 @@ gulp.task('fhc-target', function(done){
             if (err) return done(err);
             //Checking if the currently connected to host is the same as what is in the config file
             //if it's not, then target the host in the config file
-            if(host.slice(0, -1) !== fhConfFileContent.host){
+            if(!host || host.slice(0, -1) !== fhConfFileContent.host){
                 fhcLoad(function(){
                     fhc.target({_ : [fhConfFileContent.host]}, function(err, res){
                         if (err) return done(err);
