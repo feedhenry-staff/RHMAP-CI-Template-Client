@@ -84,7 +84,7 @@ gulp.task('e2ePhantom', ['connect', 'nightwatchPhantom']);
 gulp.task('e2eChrome', ['connect', 'nightwatchChrome']);
 
 //Initalise properties in the rhmap.conf-client.json file if they do not exist
-gulp.task('fhc-client-setup', ['fhc-login-apikey'], function(done){
+gulp.task('fhc-client-setup', ['fhc-login-basic'], function(done){
     var fhConfFileContent = JSON.parse(fs.readFileSync(process.env.fhConfig)),
         rhmapConfFileContent = {},
         requestsArr = [];
@@ -229,7 +229,8 @@ gulp.task('fhc-client-build', ['fhc-client-setup'], function(done) {
     //var destination = args.destination || "android";
 
     fhcLoad(function(){
-        fhc.build({_: ["project="+fhConfFileContent.projectid, "app="+fhConfFileContent.appid, "destination="+rhmapConfFileContent.build.destination, "cloud_app="+rhmapConfFileContent.build.cloudappid, "tag="+rhmapConfFileContent.build.newconnectiontag, "branch="+rhmapConfFileContent.build.branch]}, function(err, res){
+      var args={_: ["project="+fhConfFileContent.projectid, "app="+fhConfFileContent.appid, "destination="+rhmapConfFileContent.build.destination, "cloud_app="+rhmapConfFileContent.build.cloudappid, "tag="+rhmapConfFileContent.build.newconnectiontag, "branch="+rhmapConfFileContent.build.branch]};
+        fhc.build(args, function(err, res){
             if (err) return done(err);
 
             //TODO - QUESTION - Do i need to check for if res.status = complete? (IMO, probably should be. Need to check in what scenarios status returns other than complete )
